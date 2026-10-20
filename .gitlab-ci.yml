@@ -4,6 +4,8 @@ stages:
 
 django_tests:
   stage: test
+  tags:
+    - task-manager-docker
   image: python:3.12
   services:
     - name: postgres:16
