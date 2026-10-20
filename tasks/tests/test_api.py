@@ -138,6 +138,6 @@ class TaskAPITest(APITestCase):
             status.HTTP_403_FORBIDDEN
         )
 
-        self.assertFalse(
+        self.assertTrue(
             Task.objects.filter(id=task.id).exists()
         )
