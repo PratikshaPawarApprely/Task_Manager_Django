@@ -135,8 +135,7 @@ class TaskAPITest(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_204_NO_CONTENT,
-            response.data
+            status.HTTP_403_FORBIDDEN
         )
 
         self.assertFalse(
