@@ -15,10 +15,12 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          SECRET_KEY: "django-ci-test-only-key-change-this"
+          SECRET_KEY: "django-ci-test-only-key"
+          DEBUG: "False"
           POSTGRES_DB: task_manager_test
           POSTGRES_USER: taskmanager_user
           POSTGRES_PASSWORD: test_password
+          DB_HOST: 127.0.0.1
         ports:
           - 5432:5432
         options: >-
