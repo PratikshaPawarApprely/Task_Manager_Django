@@ -70,3 +70,9 @@ jobs:
 
       - name: Run Django tests
         run: python manage.py test
+      
+            - name: Run Flake8
+        run: |
+          flake8 . --count --statistics \
+            --exclude=migrations,venv,.venv,.git,__pycache__ \
+            --max-line-length=120
