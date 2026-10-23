@@ -3,11 +3,9 @@ name: Django CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   test:
@@ -28,6 +26,16 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
       SECRET_KEY: "django-ci-test-only-key"
       DEBUG: "False"
@@ -35,8 +43,10 @@ jobs:
       POSTGRES_DB: task_manager_db
       POSTGRES_USER: taskmanager_user
       POSTGRES_PASSWORD: test_password
-      DB_HOST: "127.0.0.1"
+      DB_HOST: 127.0.0.1
       DB_PORT: "5432"
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: "6379"
 
     steps:
       - name: Checkout code
@@ -55,7 +65,7 @@ jobs:
       - name: Check Django configuration
         run: python manage.py check
 
-      - name: Run database migrations
+      - name: Run migrations
         run: python manage.py migrate --noinput
 
       - name: Run Django tests
