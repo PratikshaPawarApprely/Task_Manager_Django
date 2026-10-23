@@ -3,9 +3,11 @@ name: Django CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   test:
@@ -15,26 +17,26 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          SECRET_KEY: "django-ci-test-only-key"
-          DEBUG: "False"
-          POSTGRES_DB: task_manager_test
+          POSTGRES_DB: task_manager_db
           POSTGRES_USER: taskmanager_user
           POSTGRES_PASSWORD: test_password
-          DB_HOST: 127.0.0.1
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U taskmanager_user -d task_manager_test"
+          --health-cmd "pg_isready -U taskmanager_user -d task_manager_db"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     env:
-      DB_NAME: task_manager_test
-      DB_USER: taskmanager_user
-      DB_PASSWORD: test_password
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
+      SECRET_KEY: "django-ci-test-only-key"
+      DEBUG: "False"
+      ALLOWED_HOSTS: "localhost,127.0.0.1"
+      POSTGRES_DB: task_manager_db
+      POSTGRES_USER: taskmanager_user
+      POSTGRES_PASSWORD: test_password
+      DB_HOST: "127.0.0.1"
+      DB_PORT: "5432"
 
     steps:
       - name: Checkout code
@@ -50,8 +52,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run migrations
+      - name: Check Django configuration
+        run: python manage.py check
+
+      - name: Run database migrations
         run: python manage.py migrate --noinput
 
-      - name: Run tests
+      - name: Run Django tests
         run: python manage.py test
