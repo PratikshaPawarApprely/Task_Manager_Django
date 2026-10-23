@@ -6,6 +6,7 @@ from django.contrib.auth.models import User, Group
 from projects.models import Project
 from tasks.models import Task
 
+
 class TaskAPITest(APITestCase):
 
     def setUp(self):
@@ -36,7 +37,6 @@ class TaskAPITest(APITestCase):
             response.data
         )
 
-
     def test_create_task_api(self):
         url = reverse("task-list")
 
@@ -56,7 +56,6 @@ class TaskAPITest(APITestCase):
             response.data
         )
 
-    
     def test_update_task_api(self):
         task = Task.objects.create(
             title="Original task",
@@ -84,7 +83,6 @@ class TaskAPITest(APITestCase):
         task.refresh_from_db()
         self.assertEqual(task.title, "Updated task")
 
-    
     def test_contributor_cannot_update_another_users_task(self):
         another_user = User.objects.create_user(
             username="another_contributor",
@@ -116,8 +114,6 @@ class TaskAPITest(APITestCase):
 
         task.refresh_from_db()
         self.assertEqual(task.title, "Another user's task")
-
-
 
     def test_delete_own_task_api(self):
         task = Task.objects.create(

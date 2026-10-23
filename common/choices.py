@@ -11,4 +11,3 @@ class Priority(models.TextChoices):
 class Status(models.TextChoices):
     PENDING = "pending", "Pending"
     COMPLETED = "completed", "Completed"
-

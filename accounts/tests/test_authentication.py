@@ -12,20 +12,9 @@ class JWTAuthenticationTest(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(
-        response.status_code,
-        status.HTTP_403_FORBIDDEN,
-        response.data)
-
-
-    def test_task_list_without_authentication(self):
-        url = reverse("task-list")
-        response = self.client.get(url)
-
-        self.assertEqual(
             response.status_code,
             status.HTTP_403_FORBIDDEN,
-            response.data
-        )
+            response.data)
 
     def test_task_list_with_valid_jwt(self):
         # 1. Create a test user
@@ -73,8 +62,6 @@ class JWTAuthenticationTest(APITestCase):
             response.data
         )
 
-    
-    
     def test_task_list_with_invalid_jwt(self):
         self.client.credentials(
             HTTP_AUTHORIZATION="Bearer invalid.fake.token"
@@ -87,6 +74,3 @@ class JWTAuthenticationTest(APITestCase):
             status.HTTP_403_FORBIDDEN,
             response.data
         )
-
-        
-

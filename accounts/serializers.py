@@ -23,7 +23,7 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
     permissions = serializers.SerializerMethodField()
-    #projects = serializers.SerializerMethodField()
+    # projects = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -35,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "role",
             "permissions",
-            #"projects",
+            # "projects",
         ]
 
     def get_role(self, obj):

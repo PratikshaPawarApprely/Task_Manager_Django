@@ -1,3 +1,4 @@
+from kombu import Queue
 import os
 
 from celery import Celery
@@ -16,10 +17,6 @@ app.config_from_object(
 
 app.autodiscover_tasks()
 
-
-
-
-from kombu import Queue
 
 app.conf.task_queues = (
     Queue("default"),

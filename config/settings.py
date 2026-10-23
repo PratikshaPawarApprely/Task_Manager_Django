@@ -10,15 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+
 from pathlib import Path
-
 from datetime import timedelta
-
 import os
 from dotenv import load_dotenv
-
-
-
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,7 +25,6 @@ load_dotenv(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-import os
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
@@ -72,7 +67,7 @@ REST_FRAMEWORK = {
         "anon": "20/minute",
         "user": "200/minute",
     },
-    
+
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "common.middleware.RequestLoggingMiddleware",
+    "common.api_version_middleware.APIVersionSunsetMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -109,8 +105,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-
-import os
 
 DATABASES = {
     "default": {
@@ -172,8 +166,8 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Task Manager API',
     'DESCRIPTION': 'API documentation for Task Manager',
     'VERSION': '1.0.0',
-    'SCHEMA_PATH_PREFIX':r'/api/v[0-9]',
-    'SERVE_INCLUDE_SCHEMA':False,
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 
@@ -207,7 +201,6 @@ CACHES = {
 }
 
 
-
 CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
 
@@ -215,10 +208,6 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Asia/Kolkata"
-
-
-
-
 
 
 LOGGING = {
@@ -239,14 +228,9 @@ LOGGING = {
 }
 
 
-
-
-from celery.schedules import crontab
-
 CELERY_BEAT_SCHEDULE = {
     "check-overdue-tasks-every-minute": {
         "task": "tasks.tasks.check_overdue_tasks",
         "schedule": 60.0,
     },
 }
-

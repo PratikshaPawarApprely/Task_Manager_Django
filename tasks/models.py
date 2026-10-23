@@ -34,11 +34,11 @@ class Task(models.Model):
     )
 
     assigned_to = models.ForeignKey(
-    User,
-    on_delete=models.CASCADE,
-    null=True,
-    blank=True,
-    related_name="assigned_tasks"
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="assigned_tasks"
     )
 
     created_by = models.ForeignKey(

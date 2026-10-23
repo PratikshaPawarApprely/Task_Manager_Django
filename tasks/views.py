@@ -1,3 +1,7 @@
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from django.core.cache import cache
 from rest_framework import viewsets
 from .models import Task
 from .task_serializer import TaskSerializer
@@ -18,24 +22,6 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
-
-
-
-
-from django.core.cache import cache
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-
-
-
-from django.core.cache import cache
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
-from .models import Task
-from .task_serializer import TaskSerializer
 
 
 @api_view(["GET"])

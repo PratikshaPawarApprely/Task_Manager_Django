@@ -6,13 +6,13 @@ from .filters import filter_categories
 from .permissions import AdminOrReadOnly
 
 
-
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [
         AdminOrReadOnly
     ]
+
     def get_queryset(self):
         queryset = super().get_queryset()
 
@@ -20,5 +20,3 @@ class CategoryViewSet(viewsets.ModelViewSet):
             queryset,
             self.request.query_params
         )
-
-    

@@ -17,7 +17,7 @@ def custom_exception_handler(exc, context):
             },
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-    
+
     status_code = response.status_code
 
     if status_code == 400:

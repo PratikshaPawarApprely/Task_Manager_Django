@@ -14,7 +14,7 @@ from .serializers import (
     LoginSerializer,
     CreateUserWithRoleSerializer,
 )
-from .permissions import  IsAdminRole
+from .permissions import IsAdminRole
 
 
 User = get_user_model()

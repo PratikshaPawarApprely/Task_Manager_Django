@@ -1,4 +1,7 @@
 
+from tasks.models import Task
+from django.utils import timezone
+import logging
 from celery import shared_task
 from django.db import transaction
 
@@ -64,10 +67,6 @@ def process_task_notification(idempotency_key):
         raise
 
 
-
-
-
-
 @shared_task(
     bind=True,
     max_retries=3,
@@ -83,12 +82,6 @@ def retry_demo_task(self):
         print(f"Task failed: {exc}")
         raise self.retry(exc=exc)
 
-
-
-
-import logging
-
-from celery import shared_task
 
 logger = logging.getLogger(__name__)
 
@@ -132,16 +125,6 @@ def monitored_notification_task(self, task_id):
         raise
 
 
-
-
-
-import logging
-
-from celery import shared_task
-from django.utils import timezone
-
-from tasks.models import Task
-
 logger = logging.getLogger(__name__)
 
 
@@ -167,5 +150,3 @@ def check_overdue_tasks():
     return {
         "overdue_tasks_count": count,
     }
-
-

@@ -30,12 +30,12 @@ urlpatterns = [
 
     # Accounts
     path("api/v1/accounts/", include("accounts.urls")),
-    path("api/v2/",include("tasks.urls_v2")),
+    path("api/v2/", include("tasks.urls_v2")),
     path(
-    "api/v1/cached-tasks-demo/",
-    cached_tasks_demo,
-    name="cached-tasks-demo",
-),
+        "api/v1/cached-tasks-demo/",
+        cached_tasks_demo,
+        name="cached-tasks-demo",
+    ),
     # Swagger
     path(
         "schema/",

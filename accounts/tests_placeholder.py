@@ -1,7 +1,6 @@
 from django.test import TestCase
 
 
-
 class AccountTestCase(TestCase):
 
     def test_something(self):
