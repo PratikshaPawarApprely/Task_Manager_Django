@@ -15,6 +15,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
+          SECRET_KEY: "django-ci-test-only-key-change-this"
           POSTGRES_DB: task_manager_test
           POSTGRES_USER: taskmanager_user
           POSTGRES_PASSWORD: test_password
