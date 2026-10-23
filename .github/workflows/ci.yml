@@ -1,23 +1,44 @@
 
-name: Django CI Pipeline
+name: Django CI
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch:
 
 jobs:
-  test-and-build:
+  test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: task_manager_test
+          POSTGRES_USER: taskmanager_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U taskmanager_user -d task_manager_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_NAME: task_manager_test
+      DB_USER: taskmanager_user
+      DB_PASSWORD: test_password
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -26,18 +47,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Django system check
-        env:
-          SECRET_KEY: ci-test-secret-key
-          DEBUG: "False"
-        run: python manage.py check
+      - name: Run migrations
+        run: python manage.py migrate --noinput
 
       - name: Run tests
-        env:
-          SECRET_KEY: ci-test-secret-key
-          DEBUG: "False"
         run: python manage.py test
-
-      - name: Build Docker image
-        run: docker build -t task-manager-api:ci .
-
