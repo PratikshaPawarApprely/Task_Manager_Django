@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
             # "projects",
         ]
 
-    def get_role(self, obj):
+    def get_role(self, obj) -> str | None:
         roles = list(
             obj.groups.filter(
                 name__in=ROLE_NAMES
@@ -50,7 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         return None
 
-    def get_permissions(self, obj):
+    def get_permissions(self, obj) -> dict[str, bool]:
         role = self.get_role(obj)
 
         permission_map = {
@@ -152,3 +152,29 @@ class CreateUserWithRoleSerializer(serializers.ModelSerializer):
         user.groups.add(viewer_group)
 
         return user
+
+
+# API documentation serializers
+class LoginResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+    message = serializers.CharField()
+    refresh = serializers.CharField()
+    access = serializers.CharField()
+
+
+class LogoutRequestSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+
+class MessageResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField()
+    message = serializers.CharField()
+
+
+class CachedTasksResponseSerializer(serializers.Serializer):
+    source = serializers.ChoiceField(
+        choices=["redis", "postgresql"]
+    )
+    data = serializers.ListField(
+        child=serializers.DictField()
+    )

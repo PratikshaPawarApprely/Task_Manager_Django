@@ -8,11 +8,15 @@ from rest_framework.views import APIView
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
+from drf_spectacular.utils import extend_schema
 
 from .serializers import (
     UserSerializer,
     LoginSerializer,
     CreateUserWithRoleSerializer,
+    LoginResponseSerializer,
+    LogoutRequestSerializer,
+    MessageResponseSerializer,
 )
 from .permissions import IsAdminRole
 
@@ -24,6 +28,14 @@ User = get_user_model()
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request=LoginSerializer,
+        responses={
+            200: LoginResponseSerializer,
+            401: MessageResponseSerializer,
+        },
+        tags=["Authentication"],
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -60,6 +72,10 @@ class LoginView(APIView):
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        responses=UserSerializer,
+        tags=["Authentication"],
+    )
     def get(self, request):
         return Response(UserSerializer(request.user).data)
 
@@ -101,6 +117,14 @@ class UserViewSet(viewsets.ModelViewSet):
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=LogoutRequestSerializer,
+        responses={
+            205: MessageResponseSerializer,
+            400: MessageResponseSerializer,
+        },
+        tags=["Authentication"],
+    )
     def post(self, request):
         refresh_token = request.data.get("refresh")
 

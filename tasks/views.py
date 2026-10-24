@@ -1,13 +1,20 @@
+
+from django.core.cache import cache
+
+from rest_framework import viewsets
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from django.core.cache import cache
-from rest_framework import viewsets
-from .models import Task
-from .task_serializer import TaskSerializer
-from .filters import filter_tasks
+
+from drf_spectacular.utils import extend_schema
+
+from accounts.serializers import CachedTasksResponseSerializer
 from common.pagination import CustomPagination
+
+from .filters import filter_tasks
+from .models import Task
 from .permissions import TaskPermission
+from .task_serializer import TaskSerializer
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -24,11 +31,14 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer.save(created_by=self.request.user)
 
 
+@extend_schema(
+    responses={200: CachedTasksResponseSerializer},
+    tags=["Tasks"],
+)
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def cached_tasks_demo(request):
     cache_key = f"task_manager:tasks:user:{request.user.id}"
-
     cached_data = cache.get(cache_key)
 
     if cached_data is not None:
@@ -38,8 +48,7 @@ def cached_tasks_demo(request):
         })
 
     queryset = (
-        Task.objects
-        .filter(created_by=request.user)
+        Task.objects.filter(created_by=request.user)
         .select_related(
             "project",
             "category",
